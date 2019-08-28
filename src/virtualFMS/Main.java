@@ -4,6 +4,8 @@ public class Main /* extends Application */{
 
 	public static void main(String[] args) {
 			System.out.println(PasswordManager.hash("Hellow"));
+			System.out.println(PasswordManager.hash("No"));
+			System.out.print("Ni"); 
 //		launch(args);
 	}
 	/*
