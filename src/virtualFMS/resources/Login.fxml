@@ -20,11 +20,11 @@
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <Button mnemonicParsing="false" text="Button" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+      <Button fx:id="loginID" mnemonicParsing="false" text="Button" GridPane.columnIndex="2" GridPane.rowIndex="3" />
       <Label text="Username:" GridPane.columnIndex="1" GridPane.rowIndex="1" />
       <Label text="Password:" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-      <TextField GridPane.columnIndex="2" GridPane.rowIndex="1" />
-      <PasswordField GridPane.columnIndex="2" GridPane.rowIndex="2" />
+      <TextField fx:id="usernameID" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+      <PasswordField fx:id="passwordID" GridPane.columnIndex="2" GridPane.rowIndex="2" />
       <Label prefHeight="17.0" prefWidth="44.0" text="Login" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
    </children>
 </GridPane>
