@@ -1,18 +1,24 @@
 package virtualFMS;
 
-public class Main /* extends Application */{
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
+public class Main extends Application {
 
 	public static void main(String[] args) {
-			System.out.println(PasswordManager.hash("Hellow"));
-			System.out.println(PasswordManager.hash("No"));
-			System.out.print("Ni"); 
-//		launch(args);
+		launch(args);
 	}
-	/*
-	 * @Override public void start(Stage arg0) throws Exception { // TODO
-	 * Auto-generated method stub
-	 * 
-	 * }
-	 */
+
+	@Override
+	public void start(Stage mainStage) throws Exception {
+		Parent login = FXMLLoader.load(getClass().getResource("Login.fxml"));
+		mainStage.setTitle("Virtual FMS");
+		mainStage.setScene(new Scene(login));
+		mainStage.setResizable(false);
+		mainStage.show();
+	}
 
 }
