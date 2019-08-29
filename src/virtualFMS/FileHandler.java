@@ -4,7 +4,7 @@ import java.io.File;
 
 public class FileHandler {
 
-	public void listFiles(File folder) {
+	public static void listFiles(File folder) {
 		final File[] listOfFiles = folder.listFiles();
 		File[] array;
 		for (int length = (array = listOfFiles).length, i = 0; i < length; ++i) {

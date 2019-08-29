@@ -22,7 +22,6 @@ public class PasswordManager {
 				hashBuilder.append(Integer.toString(bytes[i]));
 			return hashBuilder.toString();
 		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
