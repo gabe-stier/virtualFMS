@@ -9,10 +9,10 @@
       <Button mnemonicParsing="false" text="Sign Up" GridPane.columnIndex="2" GridPane.rowIndex="4" />
       <Label text="Username:" GridPane.columnIndex="1" GridPane.rowIndex="1" />
       <Label text="Password:" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-      <TextField GridPane.columnIndex="2" GridPane.rowIndex="1" />
-      <PasswordField GridPane.columnIndex="2" GridPane.rowIndex="2" />
+      <TextField fx:id="newUsernameID" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+      <PasswordField fx:id="password1ID" GridPane.columnIndex="2" GridPane.rowIndex="2" />
       <Label prefHeight="17.0" prefWidth="44.0" text="Sign up" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-      <PasswordField fx:id="" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+      <PasswordField fx:id="password2ID" GridPane.columnIndex="2" GridPane.rowIndex="3" />
       <Label text="Confirm Password:" GridPane.columnIndex="1" GridPane.rowIndex="3" />
    </children>
    <columnConstraints>
