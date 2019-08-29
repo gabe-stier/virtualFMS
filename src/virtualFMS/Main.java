@@ -14,7 +14,8 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage mainStage) throws Exception {
-		Parent login = FXMLLoader.load(getClass().getResource("Login.fxml"));
+
+		Parent login = FXMLLoader.load(getClass().getResource("resources/Login.fxml"));
 		mainStage.setTitle("Virtual FMS");
 		mainStage.setScene(new Scene(login));
 		mainStage.setResizable(false);
