@@ -1,5 +1,8 @@
 package virtualFMS;
 
+import java.io.File;
+import java.util.Comparator;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -9,7 +12,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -34,6 +40,7 @@ public class Main extends Application {
 		mainStage.setResizable(false);
 		mainStage.show();
 
+		TreeView<String> tvFilesExplore = (TreeView<String>) explore.lookup("#treeViewID");
 		/*
 		 * Login Scene
 		 */
@@ -52,7 +59,6 @@ public class Main extends Application {
 			}
 
 		});
-
 		btnLogin.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -60,6 +66,28 @@ public class Main extends Application {
 				txtFldUserL.clear();
 				pwdFldPwdL.clear();
 				mainStage.setScene(exploreScene);
+				TreeItem<String> root = new TreeItem<String>(new File(System.getProperty("user.dir")).getName(),
+						new ImageView(new Image(Main.class.getResourceAsStream("resources/folder.png"))));
+				FileHandler.listFiles(new File(System.getProperty("user.dir")), root, tvFilesExplore);
+				tvFilesExplore.setRoot(root);
+				root.getChildren().sort(new Comparator<TreeItem<String>>() {
+
+					@Override
+					public int compare(TreeItem<String> o1, TreeItem<String> o2) {
+						if (o1.getChildren().isEmpty() && o2.getChildren().isEmpty()) {
+							return o1.getValue().toLowerCase().compareTo(o2.getValue().toLowerCase());
+
+						}
+						if ((o1.getChildren().isEmpty()) && !(o2.getChildren().isEmpty())) {
+							return 1;
+						}
+						if (!(o1.getChildren().isEmpty()) && !(o2.getChildren().isEmpty())) {
+							return o1.getValue().toLowerCase().compareTo(o2.getValue().toLowerCase());
+						}
+						return 0;
+					}
+
+				});
 			}
 
 		});
@@ -97,7 +125,6 @@ public class Main extends Application {
 		 */
 		Button btnLogout = (Button) explore.lookup("#logoutID");
 		Button btnRefresh = (Button) explore.lookup("#refreshID");
-		TreeView<String> tvFilesExplore = (TreeView<String>) explore.lookup("#treeViewID");
 
 		btnLogout.setOnAction(new EventHandler<ActionEvent>() {
 
