@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -13,18 +14,23 @@
       <Label prefHeight="17.0" prefWidth="44.0" text="Sign up" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
       <PasswordField fx:id="password2ID" GridPane.columnIndex="2" GridPane.rowIndex="3" />
       <Label text="Confirm Password:" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="75.0" GridPane.columnIndex="2" GridPane.rowIndex="4">
+      <HBox fx:id="buttonHolder" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="75.0" GridPane.columnIndex="2" GridPane.rowIndex="4">
          <children>
-            <Button fx:id="SignUpID" mnemonicParsing="false" text="Sign Up" />
-            <Button fx:id="Cancel" mnemonicParsing="false" text="Cancel" />
+            <Button fx:id="signupID" mnemonicParsing="false" text="Sign Up" />
+            <Button fx:id="cancelID" mnemonicParsing="false" text="Cancel" />
          </children>
       </HBox>
+      <Label alignment="CENTER" prefHeight="67.0" prefWidth="188.0" text="Password must be 15 characters long and must contain at least 1 upper case, 1 lower case, 1 number, 1 special character" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="3" GridPane.rowIndex="2">
+         <font>
+            <Font size="9.0" />
+         </font>
+      </Label>
    </children>
    <columnConstraints>
-      <ColumnConstraints hgrow="SOMETIMES" maxWidth="166.0" minWidth="10.0" prefWidth="139.0" />
-      <ColumnConstraints hgrow="SOMETIMES" maxWidth="143.0" minWidth="10.0" prefWidth="113.0" />
-      <ColumnConstraints hgrow="SOMETIMES" maxWidth="232.0" minWidth="10.0" prefWidth="232.0" />
-      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="166.0" minWidth="10.0" prefWidth="63.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="10.0" prefWidth="101.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="338.0" minWidth="10.0" prefWidth="239.0" />
+      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="194.0" minWidth="10.0" prefWidth="194.0" />
    </columnConstraints>
    <rowConstraints>
       <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
