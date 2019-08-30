@@ -1,6 +1,7 @@
 package virtualFMS;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Comparator;
 
 import javafx.application.Application;
@@ -11,6 +12,8 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -132,6 +135,27 @@ public class Main extends Application {
 
 			@Override
 			public void handle(ActionEvent event) {
+				String userName = txtFldUserS.getText();
+				String pwdMain = pwdFldPwd1.getText();
+				String pwdConfirm = pwdFldPwd2.getText();
+				
+				if(!pwdMain.equals(pwdConfirm)) {
+					Alert matchErr = new Alert(AlertType.ERROR);
+					matchErr.setContentText("Your passwords do not match.");
+					matchErr.show();
+				}
+				boolean user = true;
+				try {
+					user = FileVerification.checkUsername(userName);
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if(user) {
+					Alert matchErr = new Alert(AlertType.ERROR);
+					matchErr.setContentText("Username has been taken.");
+					matchErr.show();
+				}
 
 			}
 		});
