@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.Comparator;
 
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -24,6 +26,8 @@ public class Main extends Application {
 		launch(args);
 	}
 
+	static File DIR = new File(System.getProperty("user.dir"));
+
 	@Override
 	public void start(Stage mainStage) throws Exception {
 
@@ -37,7 +41,7 @@ public class Main extends Application {
 
 		mainStage.setTitle("Virtual FMS");
 		mainStage.setScene(loginScene);
-		mainStage.setResizable(false);
+		mainStage.setResizable(true);
 		mainStage.show();
 
 		TreeView<String> tvFilesExplore = (TreeView<String>) explore.lookup("#treeViewID");
@@ -66,9 +70,9 @@ public class Main extends Application {
 				txtFldUserL.clear();
 				pwdFldPwdL.clear();
 				mainStage.setScene(exploreScene);
-				TreeItem<String> root = new TreeItem<String>(new File(System.getProperty("user.dir")).getName(),
+				TreeItem<String> root = new TreeItem<String>(DIR.getName(),
 						new ImageView(new Image(Main.class.getResourceAsStream("resources/folder.png"))));
-				FileHandler.listFiles(new File(System.getProperty("user.dir")), root, tvFilesExplore);
+				FileHandler.listFiles(DIR, root);
 				tvFilesExplore.setRoot(root);
 				root.getChildren().sort(new Comparator<TreeItem<String>>() {
 
@@ -88,6 +92,18 @@ public class Main extends Application {
 					}
 
 				});
+			}
+		});
+
+		tvFilesExplore.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TreeItem<String>>() {
+
+			@Override
+			public void changed(ObservableValue<? extends TreeItem<String>> observable, TreeItem<String> old_val,
+					TreeItem<String> new_val) {
+				TreeItem<String> selectedItem = new_val;
+				if (selectedItem.getChildren().isEmpty())
+					FileHandler.openFile(selectedItem, tvFilesExplore.getRoot());
+				// do what ever you want
 			}
 
 		});
@@ -139,7 +155,28 @@ public class Main extends Application {
 
 			@Override
 			public void handle(ActionEvent event) {
+				TreeItem<String> root = new TreeItem<String>(DIR.getName(),
+						new ImageView(new Image(Main.class.getResourceAsStream("resources/folder.png"))));
+				FileHandler.listFiles(DIR, root);
+				tvFilesExplore.setRoot(root);
+				root.getChildren().sort(new Comparator<TreeItem<String>>() {
 
+					@Override
+					public int compare(TreeItem<String> o1, TreeItem<String> o2) {
+						if (o1.getChildren().isEmpty() && o2.getChildren().isEmpty()) {
+							return o1.getValue().toLowerCase().compareTo(o2.getValue().toLowerCase());
+
+						}
+						if ((o1.getChildren().isEmpty()) && !(o2.getChildren().isEmpty())) {
+							return 1;
+						}
+						if (!(o1.getChildren().isEmpty()) && !(o2.getChildren().isEmpty())) {
+							return o1.getValue().toLowerCase().compareTo(o2.getValue().toLowerCase());
+						}
+						return 0;
+					}
+
+				});
 			}
 
 		});
