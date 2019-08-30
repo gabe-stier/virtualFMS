@@ -12,6 +12,7 @@ import java.security.NoSuchAlgorithmException;
 */
 public class PasswordManager {
 
+	// Generates a hash for the password
 	public static String hash(String pwd){
 		MessageDigest md;
 		try {

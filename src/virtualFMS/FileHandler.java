@@ -11,6 +11,8 @@ import javafx.scene.image.ImageView;
 
 public class FileHandler {
 
+	// Lists files that are in the directory. Recursive function that stops when it
+	// has ran out of folder to look in.
 	public static void listFiles(File folder, TreeItem<String> root) {
 		final File[] listOfFiles = folder.listFiles();
 		File[] array;
@@ -48,10 +50,10 @@ public class FileHandler {
 
 	}
 
+	// Opens files with the system default program
 	public static void openFile(TreeItem<String> fileTree, TreeItem<String> root) {
 		String fileLoc = getFileLoc(fileTree, "/" + fileTree.getValue(), root);
 
-//		System.out.println(fileLoc);
 		final File file = new File(Main.DIR.getAbsolutePath() + fileLoc);
 		if (Desktop.isDesktopSupported()) {
 			new Thread(() -> {

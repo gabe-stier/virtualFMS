@@ -30,13 +30,7 @@ public class FileVerification {
 	}
 
 	public boolean checkCredentials(String username, String inputHash) { // Checking the Hash
-		boolean user = false;
-		try {
-			user = checkUsername(username);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 		return true; // Temporary.
 	}
 
@@ -48,6 +42,7 @@ public class FileVerification {
 		return null;// Temporary
 	}
 
+	// Checks to see if the username is in the password file
 	public static boolean checkUsername(String username) throws FileNotFoundException {
 		File hashbrowns = new File("~/hashbrowns.txt");
 		Scanner sc = new Scanner(hashbrowns);
@@ -60,7 +55,7 @@ public class FileVerification {
 				break;
 			}
 		}
-		sc.close();
+		sc.close(); // Closes the scanner
 		return found; // Returns true if the username has been found.
 	}
 }
