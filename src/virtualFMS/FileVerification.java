@@ -10,13 +10,12 @@ import java.util.Scanner;
 public class FileVerification {
 	File hashbrowns;
 
+	// Creates the file for users.
 	public static void createNewFile() {
 		File hashbrowns = new File(Main.DIR + "/.hashbrowns.txt");
 		try {
 			hashbrowns.createNewFile();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		hashbrowns.setWritable(false); // These two operations ...
 		hashbrowns.setReadOnly(); // ... might contradict each other. Run to check.
@@ -38,7 +37,8 @@ public class FileVerification {
 
 	}
 
-	public static boolean checkCredentials(String username, String inputHash) { // Checking the Hash
+	// Checks the password hash and the user between the file and input.
+	public static boolean checkCredentials(String username, String inputHash) { 
 		ArrayList<String[]> fileUsers = null;
 
 		try {
@@ -58,16 +58,8 @@ public class FileVerification {
 		return false; // Temporary.
 	}
 
-	public String writeHash(String newPasswordHash) {
-		// TODO: Need to write validation check to make sure this is hash.
-		hashbrowns.setWritable(true);
-		// Intending to do FileWriter to write to file on a NEW LINE.
-
-		return null;// Temporary
-	}
-
 	// Checks to see if the username is in the password file
-	public static boolean checkUsername(String username, ArrayList<String[]> users) throws FileNotFoundException {
+	private static boolean checkUsername(String username, ArrayList<String[]> users) throws FileNotFoundException {
 		for (String[] user : users) {
 			if (user[0].equalsIgnoreCase(username))
 				return true;
@@ -76,10 +68,12 @@ public class FileVerification {
 		return false;
 	}
 
+	// public username check
 	public static boolean checkUsername(String username) throws FileNotFoundException {
 		return checkUsername(username, getUsers());
 	}
 
+	// gets the users and password hashes
 	public static ArrayList<String[]> getUsers() throws FileNotFoundException {
 		ArrayList<String[]> users = new ArrayList<String[]>();
 		File hashbrowns = new File(Main.DIR + "/.hashbrowns.txt");
@@ -93,13 +87,14 @@ public class FileVerification {
 		return users;
 	}
 
+	// Creates a new user.
 	public static boolean newUser(String user, String hash) {
 		File hashbrowns = new File(Main.DIR + "/.hashbrowns.txt");
 		hashbrowns.setWritable(true);
 		FileWriter writer;
 		try {
-			writer = new FileWriter(hashbrowns,true);
-			writer.append(user + ":" + hash+'\n');
+			writer = new FileWriter(hashbrowns, true);
+			writer.append(user + ":" + hash + '\n');
 			writer.close();
 			hashbrowns.setWritable(false);
 			return true;

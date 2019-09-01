@@ -200,6 +200,7 @@ public class Main extends Application {
 				String pwdMain = pwdFldPwd1.getText();
 				String pwdConfirm = pwdFldPwd2.getText();
 
+				// Checks password criteria
 				if(!PasswordManager.checkPassword(pwdMain)) {
 					check = false;
 					Alert matchErr = new Alert(AlertType.ERROR);
@@ -215,6 +216,7 @@ public class Main extends Application {
 					matchErr.show();
 				}
 				boolean user = true;
+				// Checks to see if the userfile is there
 				if (FileVerification.fileCheck()) {
 					try {
 						user = FileVerification.checkUsername(userName); // Checks to see if the username has already
@@ -230,7 +232,7 @@ public class Main extends Application {
 					usernameErr.show();
 				}
 
-				if (check) {
+				if (check) { // Allows access to new user if nothing is wrong with input data.
 					boolean newUser = FileVerification.newUser(userName, PasswordManager.hash(pwdMain));
 					if (newUser) {
 						txtFldUserS.clear();

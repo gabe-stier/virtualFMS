@@ -70,6 +70,7 @@ public class FileHandler {
 
 	}
 
+	// Gets the file location to be able to open it.
 	private static String getFileLoc(TreeItem<String> fileTree, String fileLoc, TreeItem<String> root) {
 		TreeItem<String> parent = fileTree.getParent();
 		if (!fileTree.getParent().equals(root)) {

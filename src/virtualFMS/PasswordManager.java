@@ -5,12 +5,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/*
 
-	For hashing security.
-	https://howtodoinjava.com/security/how-to-generate-secure-password-hash-md5-sha-pbkdf2-bcrypt-examples/
-
-*/
 public class PasswordManager {
 
 	// Generates a hash for the password
@@ -30,6 +25,7 @@ public class PasswordManager {
 		}
 	}
 
+	// Checks the password criteria 
 	public static boolean checkPassword(String pwd) {
 		char[] charPwd = pwd.toCharArray();
 		if (charPwd.length >= 15) {
