@@ -18,33 +18,36 @@ public class FileHandler {
 		File[] array;
 		for (int length = (array = listOfFiles).length, i = 0; i < length; ++i) {
 			final File file = array[i];
-			if (file.isFile()) {
-				TreeItem<String> treeFile = new TreeItem<String>(file.getName(),
-						new ImageView(new Image(Main.class.getResourceAsStream("resources/file.png"))));
-				root.getChildren().add(treeFile);
-			} else {
-				TreeItem<String> root2 = new TreeItem<String>(file.getName(),
-						new ImageView(new Image(Main.class.getResourceAsStream("resources/folder.png"))));
-				root.getChildren().add(root2);
-				root2.setExpanded(false);
-				listFiles(file, root2);
-				root2.getChildren().sort(new Comparator<TreeItem<String>>() {
+			if (file.getName().toCharArray()[0] != '.') {
+				if (file.isFile()) {
+					TreeItem<String> treeFile = new TreeItem<String>(file.getName(),
+							new ImageView(new Image(Main.class.getResourceAsStream("resources/file.png"))));
+					root.getChildren().add(treeFile);
 
-					@Override
-					public int compare(TreeItem<String> o1, TreeItem<String> o2) {
-						if (o1.getChildren().isEmpty() && o2.getChildren().isEmpty()) {
-							return o1.getValue().toLowerCase().compareTo(o2.getValue().toLowerCase());
-						}
-						if ((o1.getChildren().isEmpty()) && !(o2.getChildren().isEmpty())) {
-							return 1;
-						}
-						if (!(o1.getChildren().isEmpty()) && !(o2.getChildren().isEmpty())) {
-							return o1.getValue().toLowerCase().compareTo(o2.getValue().toLowerCase());
-						}
-						return 0;
-					}
+				} else {
+					TreeItem<String> root2 = new TreeItem<String>(file.getName(),
+							new ImageView(new Image(Main.class.getResourceAsStream("resources/folder.png"))));
+					root.getChildren().add(root2);
+					root2.setExpanded(false);
+					listFiles(file, root2);
+					root2.getChildren().sort(new Comparator<TreeItem<String>>() {
 
-				});
+						@Override
+						public int compare(TreeItem<String> o1, TreeItem<String> o2) {
+							if (o1.getChildren().isEmpty() && o2.getChildren().isEmpty()) {
+								return o1.getValue().toLowerCase().compareTo(o2.getValue().toLowerCase());
+							}
+							if ((o1.getChildren().isEmpty()) && !(o2.getChildren().isEmpty())) {
+								return 1;
+							}
+							if (!(o1.getChildren().isEmpty()) && !(o2.getChildren().isEmpty())) {
+								return o1.getValue().toLowerCase().compareTo(o2.getValue().toLowerCase());
+							}
+							return 0;
+						}
+
+					});
+				}
 			}
 		}
 

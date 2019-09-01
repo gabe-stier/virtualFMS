@@ -26,12 +26,24 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
 	public static void main(String[] args) {
+		setDir();
 		launch(args);
 	}
 
 	// Base directory that will be used to
-	static File DIR = new File(System.getProperty("user.dir"));
+	static File WDIR = new File(System.getProperty("user.dir") + "/Protected");
+	static File LDIR = new File("/home/protected");
+	static File DIR = null;
 	static String user = "";
+	
+	private static void setDir() {
+		String OS = System.getProperty("os.name").toLowerCase();
+		System.out.println(OS);
+		if(OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0 || OS.indexOf("aix") > 0)
+			DIR = LDIR;
+		else
+			DIR = WDIR;
+	}
 
 	@Override
 	public void start(Stage mainStage) throws Exception {
@@ -98,33 +110,40 @@ public class Main extends Application {
 			public void handle(ActionEvent event) {
 				String userName = txtFldUserL.getText();
 				String pasword = pwdFldPwdL.getText();
-				txtFldUserL.clear();
-				pwdFldPwdL.clear();
-				mainStage.setScene(exploreScene);
-				TreeItem<String> root = new TreeItem<String>(DIR.getName(),
-						new ImageView(new Image(Main.class.getResourceAsStream("resources/folder.png"))));
-				FileHandler.listFiles(DIR, root);
-				tvFilesExplore.setRoot(root);
+				boolean cred = FileVerification.checkCredentials(userName, PasswordManager.hash(pasword));
+				if (cred) {
+					txtFldUserL.clear();
+					pwdFldPwdL.clear();
+					mainStage.setScene(exploreScene);
+					TreeItem<String> root = new TreeItem<String>(DIR.getName()+"/access",
+							new ImageView(new Image(Main.class.getResourceAsStream("resources/folder.png"))));
+					FileHandler.listFiles(DIR, root);
+					tvFilesExplore.setRoot(root);
 
-				// Sorts the results
-				root.getChildren().sort(new Comparator<TreeItem<String>>() {
+					// Sorts the results
+					root.getChildren().sort(new Comparator<TreeItem<String>>() {
 
-					@Override
-					public int compare(TreeItem<String> o1, TreeItem<String> o2) {
-						if (o1.getChildren().isEmpty() && o2.getChildren().isEmpty()) {
-							return o1.getValue().toLowerCase().compareTo(o2.getValue().toLowerCase());
+						@Override
+						public int compare(TreeItem<String> o1, TreeItem<String> o2) {
+							if (o1.getChildren().isEmpty() && o2.getChildren().isEmpty()) {
+								return o1.getValue().toLowerCase().compareTo(o2.getValue().toLowerCase());
 
+							}
+							if ((o1.getChildren().isEmpty()) && !(o2.getChildren().isEmpty())) {
+								return 1;
+							}
+							if (!(o1.getChildren().isEmpty()) && !(o2.getChildren().isEmpty())) {
+								return o1.getValue().toLowerCase().compareTo(o2.getValue().toLowerCase());
+							}
+							return 0;
 						}
-						if ((o1.getChildren().isEmpty()) && !(o2.getChildren().isEmpty())) {
-							return 1;
-						}
-						if (!(o1.getChildren().isEmpty()) && !(o2.getChildren().isEmpty())) {
-							return o1.getValue().toLowerCase().compareTo(o2.getValue().toLowerCase());
-						}
-						return 0;
-					}
 
-				});
+					});
+				} else {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setContentText("Invalid username or password.");
+					alert.show();
+				}
 			}
 		});
 
@@ -176,29 +195,53 @@ public class Main extends Application {
 
 			@Override
 			public void handle(ActionEvent event) {
+				boolean check = true;
 				String userName = txtFldUserS.getText();
 				String pwdMain = pwdFldPwd1.getText();
 				String pwdConfirm = pwdFldPwd2.getText();
 
+				if(!PasswordManager.checkPassword(pwdMain)) {
+					check = false;
+					Alert matchErr = new Alert(AlertType.ERROR);
+					matchErr.setContentText("Password does not meet criteria.");
+					matchErr.show();
+				}
+				
 				// Alert if the passwords do not match
 				if (!pwdMain.equals(pwdConfirm)) {
+					check = false;
 					Alert matchErr = new Alert(AlertType.ERROR);
-					matchErr.setContentText("Your passwords do not match.");
+					matchErr.setContentText("Passwords do not match.");
 					matchErr.show();
 				}
 				boolean user = true;
-				try {
-					user = FileVerification.checkUsername(userName); // Checks to see if the username has already been
-																		// taken.
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
+				if (FileVerification.fileCheck()) {
+					try {
+						user = FileVerification.checkUsername(userName); // Checks to see if the username has already
+																			// been taken.
+					} catch (FileNotFoundException e) {
+					}
 				}
-
 				// Alert if the username is taken
 				if (user) {
+					check = false;
 					Alert usernameErr = new Alert(AlertType.ERROR);
 					usernameErr.setContentText("Username has been taken.");
 					usernameErr.show();
+				}
+
+				if (check) {
+					boolean newUser = FileVerification.newUser(userName, PasswordManager.hash(pwdMain));
+					if (newUser) {
+						txtFldUserS.clear();
+						pwdFldPwd1.clear();
+						pwdFldPwd2.clear();
+						mainStage.setScene(loginScene);
+					} else {
+						Alert usernameErr = new Alert(AlertType.ERROR);
+						usernameErr.setContentText("An error has occured. Please try again later.");
+						usernameErr.show();
+					}
 				}
 
 			}
@@ -231,7 +274,7 @@ public class Main extends Application {
 
 			@Override
 			public void handle(ActionEvent event) {
-				TreeItem<String> root = new TreeItem<String>(DIR.getName(),
+				TreeItem<String> root = new TreeItem<String>(DIR.getName()+"/access",
 						new ImageView(new Image(Main.class.getResourceAsStream("resources/folder.png"))));
 				FileHandler.listFiles(DIR, root);
 				tvFilesExplore.setRoot(root);
