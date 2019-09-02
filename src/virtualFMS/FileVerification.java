@@ -51,8 +51,9 @@ public class FileVerification {
 
 		if (fileUsers != null) {
 			for (String[] user : fileUsers) {
-				if (username.equalsIgnoreCase(user[0]) && inputHash.equals(user[1]))
-					return true;
+				if(user.length == 2)
+					if (username.equalsIgnoreCase(user[0]) && inputHash.equals(user[1]))
+						return true;
 			}
 			return false;
 		}
@@ -83,7 +84,7 @@ public class FileVerification {
 		while (sc.hasNextLine()) {
 			String line = sc.nextLine();
 			String[] crud = line.split(":");
-			users.add(crud);
+				users.add(crud);
 		}
 		sc.close(); // Closes the scanner
 		return users;
