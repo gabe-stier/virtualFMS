@@ -19,7 +19,7 @@ public class FileVerification {
 			Main.LOGGER.severe(e.getStackTrace().toString());
 		}
 		hashbrowns.setWritable(false); // These two operations ...
-		hashbrowns.setReadOnly(); // ... might contradict each other. Run to check.
+		hashbrowns.setReadable(false);
 	}
 
 	public static boolean fileCheck() { // Built to check and ensure that the file exists.
@@ -80,6 +80,7 @@ public class FileVerification {
 	public static ArrayList<String[]> getUsers() throws FileNotFoundException {
 		ArrayList<String[]> users = new ArrayList<String[]>();
 		File hashbrowns = new File(Main.DIR + "/.hashbrowns.txt");
+		hashbrowns.setReadable(true);
 		Scanner sc = new Scanner(hashbrowns);
 		while (sc.hasNextLine()) {
 			String line = sc.nextLine();
@@ -87,6 +88,7 @@ public class FileVerification {
 				users.add(crud);
 		}
 		sc.close(); // Closes the scanner
+		hashbrowns.setReadable(false);
 		return users;
 	}
 

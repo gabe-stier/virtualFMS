@@ -40,7 +40,6 @@ public class Main extends Application {
 		} catch (SecurityException | IOException e) {
 			e.printStackTrace();
 		} finally {
-			System.out.println("4\n");
 			launch(args);
 		}
 	}
@@ -162,9 +161,9 @@ public class Main extends Application {
 					mainStage.setScene(exploreScene);
 					LOGGER.info(userName + " has logged in.");
 					currentUser = userName;
-					TreeItem<String> root = new TreeItem<String>(DIR.getName() + "/access",
+					TreeItem<String> root = new TreeItem<String>("access",
 							new ImageView(new Image(Main.class.getResourceAsStream("resources/folder.png"))));
-					vfmsFileHandler.listFiles(DIR, root);
+					vfmsFileHandler.listFiles(new File(DIR.getPath()+ "/access"), root);
 					tvFilesExplore.setRoot(root);
 
 					// Sorts the results
@@ -334,9 +333,9 @@ public class Main extends Application {
 
 			@Override
 			public void handle(ActionEvent event) {
-				TreeItem<String> root = new TreeItem<String>(DIR.getName() + "/access",
+				TreeItem<String> root = new TreeItem<String>("access",
 						new ImageView(new Image(Main.class.getResourceAsStream("resources/folder.png"))));
-				vfmsFileHandler.listFiles(DIR, root);
+				vfmsFileHandler.listFiles(new File(DIR.getPath()+ "/access"), root);
 				tvFilesExplore.setRoot(root);
 				root.getChildren().sort(new Comparator<TreeItem<String>>() {
 
@@ -369,9 +368,8 @@ public class Main extends Application {
 	}
 
 	public final static void logSetUp() throws SecurityException, IOException {
-		System.out.println("2\n");
 		LOGGER.setLevel(Level.INFO);
-		FileHandler logFile = new FileHandler(DIR + "/virtualFMS.log");
+		FileHandler logFile = new FileHandler("Protected/virtualFMS.log");
 		Logger rootLogger = Logger.getLogger("");
 		Handler[] handlers = rootLogger.getHandlers();
 		if (handlers[0] instanceof ConsoleHandler) {
@@ -380,7 +378,6 @@ public class Main extends Application {
 		LOGGER.setUseParentHandlers(false);
 		logFile.setFormatter(new SimpleFormatter());
 		LOGGER.addHandler(logFile);
-		System.out.println("3\n");
 	}
 
 }
