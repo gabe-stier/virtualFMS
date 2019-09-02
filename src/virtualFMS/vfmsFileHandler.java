@@ -9,7 +9,7 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-public class FileHandler {
+public class vfmsFileHandler {
 
 	// Lists files that are in the directory. Recursive function that stops when it
 	// has ran out of folder to look in.
@@ -62,8 +62,8 @@ public class FileHandler {
 			new Thread(() -> {
 				try {
 					Desktop.getDesktop().open(file);
-				} catch (IOException e1) {
-					e1.printStackTrace();
+				} catch (IOException e) {
+					Main.LOGGER.severe(e.getStackTrace().toString());
 				}
 			}).start();
 		}

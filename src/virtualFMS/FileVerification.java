@@ -16,6 +16,7 @@ public class FileVerification {
 		try {
 			hashbrowns.createNewFile();
 		} catch (IOException e) {
+			Main.LOGGER.severe(e.getStackTrace().toString());
 		}
 		hashbrowns.setWritable(false); // These two operations ...
 		hashbrowns.setReadOnly(); // ... might contradict each other. Run to check.
@@ -44,6 +45,7 @@ public class FileVerification {
 		try {
 			fileUsers = getUsers();
 		} catch (FileNotFoundException e) {
+			Main.LOGGER.severe(e.getStackTrace().toString());
 
 		}
 
@@ -99,7 +101,7 @@ public class FileVerification {
 			hashbrowns.setWritable(false);
 			return true;
 		} catch (IOException e) {
-			e.printStackTrace();
+			Main.LOGGER.severe(e.getStackTrace().toString());
 		}
 		return false;
 	}

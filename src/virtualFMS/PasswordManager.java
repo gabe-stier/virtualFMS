@@ -1,31 +1,28 @@
 package virtualFMS;
 
+import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 public class PasswordManager {
 
 	// Generates a hash for the password
 	public static String hash(String pwd) {
-		MessageDigest md;
 		try {
-			md = MessageDigest.getInstance("SHA-512");
+			MessageDigest md = MessageDigest.getInstance("SHA-512");
 			md.update(pwd.getBytes());
 			byte[] bytes = md.digest();
-			StringBuilder hashBuilder = new StringBuilder();
-			for (int i = 0; i < bytes.length; i++)
-				hashBuilder.append(Integer.toString(bytes[i]));
-			return hashBuilder.toString();
+			BigInteger no = new BigInteger(1, bytes);;
+			return no.toString(16);
 		} catch (NoSuchAlgorithmException e) {
-
+			Main.LOGGER.severe(e.getStackTrace().toString());
 			return null;
 		}
 	}
 
-	// Checks the password criteria 
+	// Checks the password criteria
 	public static boolean checkPassword(String pwd) {
 		char[] charPwd = pwd.toCharArray();
 		if (charPwd.length >= 15) {

@@ -2,8 +2,15 @@ package virtualFMS;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.Optional;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -28,7 +35,14 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
 	public static void main(String[] args) {
-		launch(args);
+		try {
+			logSetUp();
+		} catch (SecurityException | IOException e) {
+			e.printStackTrace();
+		} finally {
+			System.out.println("4\n");
+			launch(args);
+		}
 	}
 
 	// Base directory that will be used to
@@ -37,6 +51,9 @@ public class Main extends Application {
 	static File DIR = null;
 	static String user = "";
 	final static String OS = System.getProperty("os.name").toLowerCase();
+	static String currentUser = null;
+
+	final static Logger LOGGER = Logger.getLogger("VirutalFMS");
 
 	private static void setDir(Stage stage) {
 		boolean dirExist = false;
@@ -85,8 +102,10 @@ public class Main extends Application {
 		mainStage.setScene(loginScene);
 		mainStage.setResizable(true);
 
-		if (DIR == null)
+		if (DIR == null) {
 			setDir(mainStage);
+			mainStage.show();
+		}
 		else
 			mainStage.show();
 
@@ -141,9 +160,11 @@ public class Main extends Application {
 					txtFldUserL.clear();
 					pwdFldPwdL.clear();
 					mainStage.setScene(exploreScene);
+					LOGGER.info(userName + " has logged in.");
+					currentUser = userName;
 					TreeItem<String> root = new TreeItem<String>(DIR.getName() + "/access",
 							new ImageView(new Image(Main.class.getResourceAsStream("resources/folder.png"))));
-					FileHandler.listFiles(DIR, root);
+					vfmsFileHandler.listFiles(DIR, root);
 					tvFilesExplore.setRoot(root);
 
 					// Sorts the results
@@ -182,7 +203,7 @@ public class Main extends Application {
 					TreeItem<String> new_val) {
 				TreeItem<String> selectedItem = new_val;
 				if (selectedItem.getChildren().isEmpty())
-					FileHandler.openFile(selectedItem, tvFilesExplore.getRoot());
+					vfmsFileHandler.openFile(selectedItem, tvFilesExplore.getRoot());
 			}
 		});
 
@@ -248,6 +269,7 @@ public class Main extends Application {
 						user = FileVerification.checkUsername(userName); // Checks to see if the username has already
 																			// been taken.
 					} catch (FileNotFoundException e) {
+						LOGGER.severe(e.getStackTrace().toString());
 					}
 				}
 				// Alert if the username is taken
@@ -258,13 +280,13 @@ public class Main extends Application {
 					usernameErr.show();
 				}
 
-				if(userName.contains(":")) {
+				if (userName.contains(":")) {
 					check = false;
 					Alert usernameErr = new Alert(AlertType.ERROR);
 					usernameErr.setContentText("Username can not contain a colon \":\".");
 					usernameErr.show();
 				}
-				
+
 				if (check) { // Allows access to new user if nothing is wrong with input data.
 					boolean newUser = FileVerification.newUser(userName, PasswordManager.hash(pwdMain));
 					if (newUser) {
@@ -272,6 +294,7 @@ public class Main extends Application {
 						pwdFldPwd1.clear();
 						pwdFldPwd2.clear();
 						mainStage.setScene(loginScene);
+						LOGGER.info("A new user has been created with the name of: " + userName);
 					} else {
 						Alert usernameErr = new Alert(AlertType.ERROR);
 						usernameErr.setContentText("An error has occured. Please try again later.");
@@ -299,6 +322,8 @@ public class Main extends Application {
 			@Override
 			public void handle(ActionEvent event) {
 				mainStage.setScene(loginScene);
+				LOGGER.info(currentUser + " has logged out.");
+				currentUser = null;
 			}
 
 		});
@@ -311,7 +336,7 @@ public class Main extends Application {
 			public void handle(ActionEvent event) {
 				TreeItem<String> root = new TreeItem<String>(DIR.getName() + "/access",
 						new ImageView(new Image(Main.class.getResourceAsStream("resources/folder.png"))));
-				FileHandler.listFiles(DIR, root);
+				vfmsFileHandler.listFiles(DIR, root);
 				tvFilesExplore.setRoot(root);
 				root.getChildren().sort(new Comparator<TreeItem<String>>() {
 
@@ -334,6 +359,28 @@ public class Main extends Application {
 			}
 
 		});
+	}
+
+	@Override
+	public void stop() {
+		if (currentUser != null)
+			LOGGER.info(currentUser + " has logged out.");
+		LOGGER.info("Application has closed.");
+	}
+
+	public final static void logSetUp() throws SecurityException, IOException {
+		System.out.println("2\n");
+		LOGGER.setLevel(Level.INFO);
+		FileHandler logFile = new FileHandler("virtualFMS.log");
+		Logger rootLogger = Logger.getLogger("");
+		Handler[] handlers = rootLogger.getHandlers();
+		if (handlers[0] instanceof ConsoleHandler) {
+			rootLogger.removeHandler(handlers[0]);
+		}
+		LOGGER.setUseParentHandlers(false);
+		logFile.setFormatter(new SimpleFormatter());
+		LOGGER.addHandler(logFile);
+		System.out.println("3\n");
 	}
 
 }
