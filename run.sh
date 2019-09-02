@@ -1,0 +1,1 @@
+java --module-path /usr/share/java/openjfx/lib2 --add-modules=javafx.controls --add-modules=javafx.fxml -jar virtualFMS.jar
