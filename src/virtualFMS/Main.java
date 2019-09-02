@@ -3,6 +3,7 @@ package virtualFMS;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Comparator;
+import java.util.Optional;
 
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -15,6 +16,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
@@ -26,7 +28,6 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
 	public static void main(String[] args) {
-		setDir();
 		launch(args);
 	}
 
@@ -35,14 +36,35 @@ public class Main extends Application {
 	static File LDIR = new File("/home/protected");
 	static File DIR = null;
 	static String user = "";
-	
-	private static void setDir() {
-		String OS = System.getProperty("os.name").toLowerCase();
-		System.out.println(OS);
-		if(OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0 || OS.indexOf("aix") > 0)
-			DIR = LDIR;
-		else
-			DIR = WDIR;
+	final static String OS = System.getProperty("os.name").toLowerCase();
+
+	private static void setDir(Stage stage) {
+		boolean dirExist = false;
+		Alert opSys = new Alert(AlertType.INFORMATION);
+		if (OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0 || OS.indexOf("aix") > 0) {
+			if (LDIR.exists()) {
+				dirExist = true;
+				DIR = LDIR;
+			} else
+				opSys.setContentText("The required folder does not exist.");
+		} else if (OS.indexOf("win") >= 0) {
+			if (WDIR.exists()) {
+				dirExist = true;
+				DIR = WDIR;
+			} else
+				opSys.setContentText("The required folder does not exist.");
+		} else {
+			opSys.setContentText("This program does not work with your current operating system.");
+		}
+
+		if (!dirExist) {
+			Optional<ButtonType> result = opSys.showAndWait();
+			if (!result.isPresent())
+				stage.close();
+			else if (result.get() == ButtonType.OK) {
+				stage.close();
+			}
+		}
 	}
 
 	@Override
@@ -62,7 +84,11 @@ public class Main extends Application {
 		mainStage.setTitle("Virtual FMS");
 		mainStage.setScene(loginScene);
 		mainStage.setResizable(true);
-		mainStage.show();
+
+		if (DIR == null)
+			setDir(mainStage);
+		else
+			mainStage.show();
 
 		// Gets the node that will show the files
 		TreeView<String> tvFilesExplore = (TreeView<String>) explore.lookup("#treeViewID");
@@ -115,7 +141,7 @@ public class Main extends Application {
 					txtFldUserL.clear();
 					pwdFldPwdL.clear();
 					mainStage.setScene(exploreScene);
-					TreeItem<String> root = new TreeItem<String>(DIR.getName()+"/access",
+					TreeItem<String> root = new TreeItem<String>(DIR.getName() + "/access",
 							new ImageView(new Image(Main.class.getResourceAsStream("resources/folder.png"))));
 					FileHandler.listFiles(DIR, root);
 					tvFilesExplore.setRoot(root);
@@ -201,13 +227,13 @@ public class Main extends Application {
 				String pwdConfirm = pwdFldPwd2.getText();
 
 				// Checks password criteria
-				if(!PasswordManager.checkPassword(pwdMain)) {
+				if (!PasswordManager.checkPassword(pwdMain)) {
 					check = false;
 					Alert matchErr = new Alert(AlertType.ERROR);
 					matchErr.setContentText("Password does not meet criteria.");
 					matchErr.show();
 				}
-				
+
 				// Alert if the passwords do not match
 				if (!pwdMain.equals(pwdConfirm)) {
 					check = false;
@@ -232,6 +258,13 @@ public class Main extends Application {
 					usernameErr.show();
 				}
 
+				if(userName.contains(":")) {
+					check = false;
+					Alert usernameErr = new Alert(AlertType.ERROR);
+					usernameErr.setContentText("Username can not contain a colon \":\".");
+					usernameErr.show();
+				}
+				
 				if (check) { // Allows access to new user if nothing is wrong with input data.
 					boolean newUser = FileVerification.newUser(userName, PasswordManager.hash(pwdMain));
 					if (newUser) {
@@ -276,7 +309,7 @@ public class Main extends Application {
 
 			@Override
 			public void handle(ActionEvent event) {
-				TreeItem<String> root = new TreeItem<String>(DIR.getName()+"/access",
+				TreeItem<String> root = new TreeItem<String>(DIR.getName() + "/access",
 						new ImageView(new Image(Main.class.getResourceAsStream("resources/folder.png"))));
 				FileHandler.listFiles(DIR, root);
 				tvFilesExplore.setRoot(root);
