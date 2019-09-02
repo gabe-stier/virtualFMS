@@ -371,7 +371,7 @@ public class Main extends Application {
 	public final static void logSetUp() throws SecurityException, IOException {
 		System.out.println("2\n");
 		LOGGER.setLevel(Level.INFO);
-		FileHandler logFile = new FileHandler("virtualFMS.log");
+		FileHandler logFile = new FileHandler(DIR + "/virtualFMS.log");
 		Logger rootLogger = Logger.getLogger("");
 		Handler[] handlers = rootLogger.getHandlers();
 		if (handlers[0] instanceof ConsoleHandler) {
