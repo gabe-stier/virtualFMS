@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Scanner;
 
 public class FileVerification {
@@ -16,7 +17,6 @@ public class FileVerification {
 		try {
 			hashbrowns.createNewFile();
 		} catch (IOException e) {
-			Main.LOGGER.severe(e.getStackTrace().toString());
 		}
 		hashbrowns.setWritable(false); // These two operations ...
 		hashbrowns.setReadable(false);
@@ -27,33 +27,27 @@ public class FileVerification {
 		if (!hashbrowns.exists()) {
 			createNewFile();
 		}
-		return true; // GABE: Check this. I wrote this and it seems inefficient.
-
-		/*
-		 * From what I know it is efficient enough to get the job done. But I do think
-		 * that this function will only ever be called once. So you could insert the
-		 * code that is in the function in to the actual use case. (AKA where you put
-		 * the function call)
-		 */
+		return true;
 
 	}
 
 	// Checks the password hash and the user between the file and input.
-	public static boolean checkCredentials(String username, String inputHash) { 
+	public static boolean checkCredentials(String username, String pwd) { 
 		ArrayList<String[]> fileUsers = null;
 
 		try {
 			fileUsers = getUsers();
 		} catch (FileNotFoundException e) {
-			Main.LOGGER.severe(e.getStackTrace().toString());
 
 		}
 
 		if (fileUsers != null) {
 			for (String[] user : fileUsers) {
-				if(user.length == 2)
+				if(user.length == 3) {
+					String inputHash = PasswordManager.hash(pwd, Base64.getDecoder().decode(user[2]));
 					if (username.equalsIgnoreCase(user[0]) && inputHash.equals(user[1]))
 						return true;
+					}
 			}
 			return false;
 		}
@@ -93,18 +87,18 @@ public class FileVerification {
 	}
 
 	// Creates a new user.
-	public static boolean newUser(String user, String hash) {
+	public static boolean newUser(String user, String pwd, byte[] nacl) {
+		String hash = PasswordManager.hash(pwd, nacl);
 		File hashbrowns = new File(Main.DIR + "/.hashbrowns.txt");
 		hashbrowns.setWritable(true);
 		FileWriter writer;
 		try {
 			writer = new FileWriter(hashbrowns, true);
-			writer.append(user + ":" + hash + '\n');
+			writer.append(user + ":" + hash + ":" + Base64.getEncoder().encodeToString(nacl) + '\n');
 			writer.close();
 			hashbrowns.setWritable(false);
 			return true;
 		} catch (IOException e) {
-			Main.LOGGER.severe(e.getStackTrace().toString());
 		}
 		return false;
 	}

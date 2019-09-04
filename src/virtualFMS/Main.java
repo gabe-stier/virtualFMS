@@ -2,15 +2,8 @@ package virtualFMS;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Comparator;
 import java.util.Optional;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -35,13 +28,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
 	public static void main(String[] args) {
-		try {
-			logSetUp();
-		} catch (SecurityException | IOException e) {
-			e.printStackTrace();
-		} finally {
 			launch(args);
-		}
 	}
 
 	// Base directory that will be used to
@@ -52,7 +39,6 @@ public class Main extends Application {
 	final static String OS = System.getProperty("os.name").toLowerCase();
 	static String currentUser = null;
 
-	final static Logger LOGGER = Logger.getLogger("VirutalFMS");
 
 	private static void setDir(Stage stage) {
 		boolean dirExist = false;
@@ -154,12 +140,11 @@ public class Main extends Application {
 			public void handle(ActionEvent event) {
 				String userName = txtFldUserL.getText();
 				String pasword = pwdFldPwdL.getText();
-				boolean cred = FileVerification.checkCredentials(userName, PasswordManager.hash(pasword));
+				boolean cred = FileVerification.checkCredentials(userName, pasword);
 				if (cred) {
 					txtFldUserL.clear();
 					pwdFldPwdL.clear();
 					mainStage.setScene(exploreScene);
-					LOGGER.info(userName + " has logged in.");
 					currentUser = userName;
 					TreeItem<String> root = new TreeItem<String>("access",
 							new ImageView(new Image(Main.class.getResourceAsStream("resources/folder.png"))));
@@ -268,7 +253,6 @@ public class Main extends Application {
 						user = FileVerification.checkUsername(userName); // Checks to see if the username has already
 																			// been taken.
 					} catch (FileNotFoundException e) {
-						LOGGER.severe(e.getStackTrace().toString());
 					}
 				}
 				// Alert if the username is taken
@@ -287,13 +271,13 @@ public class Main extends Application {
 				}
 
 				if (check) { // Allows access to new user if nothing is wrong with input data.
-					boolean newUser = FileVerification.newUser(userName, PasswordManager.hash(pwdMain));
+					byte[] nacl = PasswordManager.salt();
+					boolean newUser = FileVerification.newUser(userName, pwdMain, nacl);
 					if (newUser) {
 						txtFldUserS.clear();
 						pwdFldPwd1.clear();
 						pwdFldPwd2.clear();
 						mainStage.setScene(loginScene);
-						LOGGER.info("A new user has been created with the name of: " + userName);
 					} else {
 						Alert usernameErr = new Alert(AlertType.ERROR);
 						usernameErr.setContentText("An error has occured. Please try again later.");
@@ -321,7 +305,6 @@ public class Main extends Application {
 			@Override
 			public void handle(ActionEvent event) {
 				mainStage.setScene(loginScene);
-				LOGGER.info(currentUser + " has logged out.");
 				currentUser = null;
 			}
 
@@ -359,25 +342,4 @@ public class Main extends Application {
 
 		});
 	}
-
-	@Override
-	public void stop() {
-		if (currentUser != null)
-			LOGGER.info(currentUser + " has logged out.");
-		LOGGER.info("Application has closed.");
-	}
-
-	public final static void logSetUp() throws SecurityException, IOException {
-		LOGGER.setLevel(Level.INFO);
-		FileHandler logFile = new FileHandler("Protected/virtualFMS.log");
-		Logger rootLogger = Logger.getLogger("");
-		Handler[] handlers = rootLogger.getHandlers();
-		if (handlers[0] instanceof ConsoleHandler) {
-			rootLogger.removeHandler(handlers[0]);
-		}
-		LOGGER.setUseParentHandlers(false);
-		logFile.setFormatter(new SimpleFormatter());
-		LOGGER.addHandler(logFile);
-	}
-
 }

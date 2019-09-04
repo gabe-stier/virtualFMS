@@ -63,7 +63,6 @@ public class vfmsFileHandler {
 				try {
 					Desktop.getDesktop().open(file);
 				} catch (IOException e) {
-					Main.LOGGER.severe(e.getStackTrace().toString());
 				}
 			}).start();
 		}
