@@ -33,7 +33,7 @@ public class Main extends Application {
 
 	// Base directory that will be used to
 	static File WDIR = new File(System.getProperty("user.dir") + "/Protected");
-	static File LDIR = new File("/home/protected");
+	static File LDIR = new File("/var/protected");
 	static File DIR = null;
 	static String user = "";
 	final static String OS = System.getProperty("os.name").toLowerCase();
@@ -253,6 +253,7 @@ public class Main extends Application {
 						user = FileVerification.checkUsername(userName); // Checks to see if the username has already
 																			// been taken.
 					} catch (FileNotFoundException e) {
+						e.printStackTrace();
 					}
 				}
 				// Alert if the username is taken

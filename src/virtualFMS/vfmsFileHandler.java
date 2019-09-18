@@ -57,12 +57,13 @@ public class vfmsFileHandler {
 	public static void openFile(TreeItem<String> fileTree, TreeItem<String> root) {
 		String fileLoc = getFileLoc(fileTree, "/" + fileTree.getValue(), root);
 
-		final File file = new File(Main.DIR.getAbsolutePath() + fileLoc);
+		final File file = new File(Main.DIR.getAbsolutePath() +"/access"+ fileLoc);
 		if (Desktop.isDesktopSupported()) {
 			new Thread(() -> {
 				try {
 					Desktop.getDesktop().open(file);
 				} catch (IOException e) {
+					e.printStackTrace();
 				}
 			}).start();
 		}

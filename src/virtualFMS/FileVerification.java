@@ -17,6 +17,7 @@ public class FileVerification {
 		try {
 			hashbrowns.createNewFile();
 		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		hashbrowns.setWritable(false); // These two operations ...
 		hashbrowns.setReadable(false);
@@ -38,6 +39,7 @@ public class FileVerification {
 		try {
 			fileUsers = getUsers();
 		} catch (FileNotFoundException e) {
+			e.printStackTrace();
 
 		}
 
@@ -52,8 +54,7 @@ public class FileVerification {
 			return false;
 		}
 
-		return false; // Temporary.
-	}
+		return false; }
 
 	// Checks to see if the username is in the password file
 	private static boolean checkUsername(String username, ArrayList<String[]> users) throws FileNotFoundException {
@@ -99,6 +100,7 @@ public class FileVerification {
 			hashbrowns.setWritable(false);
 			return true;
 		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		return false;
 	}

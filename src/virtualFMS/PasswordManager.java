@@ -18,6 +18,7 @@ public class PasswordManager {
 			BigInteger no = new BigInteger(1, bytes);;
 			return no.toString(16);
 		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -53,4 +54,3 @@ public class PasswordManager {
 		return nacl;
 	}
 }
-//ThisIsMyPassword1!

@@ -18,7 +18,7 @@
          </GridPane.margin></Label>
       <TextField fx:id="newUsernameID" GridPane.columnIndex="2" GridPane.rowIndex="1" />
       <PasswordField fx:id="password1ID" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-      <Label prefHeight="17.0" prefWidth="44.0" text="Sign up" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+      <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="234.0" text="Sign up" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
       <PasswordField fx:id="password2ID" GridPane.columnIndex="2" GridPane.rowIndex="3" />
       <Label text="Confirm Password:" GridPane.columnIndex="1" GridPane.rowIndex="3">
          <GridPane.margin>
